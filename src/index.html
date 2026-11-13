@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="柯基 Mini 的照片與影片。">
+  <title>Mini</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="gallery.js"></script>
+</head>
+<body>
+  <header class="bar"><a href="./index.html">Mini<span>.</span></a></header>
+  <main>
+    <section class="profile" aria-labelledby="name">
+      <button type="button" class="avatar-trigger" aria-label="播放 Mini 的限時動態" disabled>
+        <img class="avatar" src="data/image/main.jpg" alt="Mini 的頭貼" width="136" height="136">
+      </button>
+      <div>
+        <h1 id="name">Mini</h1>
+        <ul class="profile-stats" aria-label="帳號統計">
+          <li><strong id="post-count"></strong> 貼文</li>
+          <li><strong>70億</strong> 粉絲</li>
+          <li><strong>0</strong> 追蹤中</li>
+        </ul>
+        <p class="breed">柯基 <span>·</span> 女生</p>
+        <p class="birthday"><time datetime="2024-07-24">2024/07/24</time> 出生</p>
+      </div>
+    </section>
+    <section aria-label="Mini 的圖庫">
+      <div class="filters" role="group" aria-label="媒體類型">
+        <button type="button" data-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-filter="image" aria-pressed="false">照片</button>
+        <button type="button" data-filter="video" aria-pressed="false">影片</button>
+      </div>
+      <p class="empty" role="status" hidden></p>
+      <div class="grid"></div>
+    </section>
+  </main>
+  <dialog aria-label="媒體預覽">
+    <form method="dialog"><button class="close" aria-label="關閉預覽" autofocus>×</button></form>
+    <div class="preview"></div>
+  </dialog>
+  <script type="application/json" id="media"><!-- media --></script>
+</body>
+</html>
