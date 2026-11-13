@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="柯基 Mini 的照片與影片。">
+  <title>Mini</title>
+  <link rel="stylesheet" href="src/styles.css">
+  <script defer src="src/gallery.js"></script>
+</head>
+<body>
+  <header class="bar"><a href="./index.html">Mini<span>.</span></a></header>
+  <main>
+    <section class="profile" aria-labelledby="name">
+      <button type="button" class="avatar-trigger" aria-label="播放 Mini 的限時動態" disabled>
+        <img class="avatar" src="data/image/main.jpg" alt="Mini 的頭貼" width="136" height="136">
+      </button>
+      <div>
+        <h1 id="name">Mini</h1>
+        <ul class="profile-stats" aria-label="帳號統計">
+          <li><strong id="post-count"></strong> 貼文</li>
+          <li><strong>70億</strong> 粉絲</li>
+          <li><strong>0</strong> 追蹤中</li>
+        </ul>
+        <p class="breed">柯基 <span>·</span> 女生</p>
+        <p class="birthday"><time datetime="2024-07-24">2024/07/24</time> 出生</p>
+      </div>
+    </section>
+    <section aria-label="Mini 的圖庫">
+      <div class="filters" role="group" aria-label="媒體類型">
+        <button type="button" data-filter="all" aria-pressed="true">全部</button>
+        <button type="button" data-filter="image" aria-pressed="false">照片</button>
+        <button type="button" data-filter="video" aria-pressed="false">影片</button>
+      </div>
+      <p class="empty" role="status" hidden></p>
+      <div class="grid"></div>
+    </section>
+  </main>
+  <dialog aria-label="媒體預覽">
+    <form method="dialog"><button class="close" aria-label="關閉預覽" autofocus>×</button></form>
+    <div class="preview"></div>
+  </dialog>
+  <script type="application/json" id="media">[{"type":"video","path":"data/video/816243598.945795.mp4","name":"816243598.945795","url":"data/video/816243598.945795.mp4","poster":"dist/posters/1.jpg"},{"type":"video","path":"data/video/816243599.012892.mp4","name":"816243599.012892","url":"data/video/816243599.012892.mp4","poster":"dist/posters/2.jpg"},{"type":"video","path":"data/video/816271266.094663.mp4","name":"816271266.094663","url":"data/video/816271266.094663.mp4","poster":"dist/posters/3.jpg"},{"type":"shorts","path":"data/shorts/816271266.177938.mp4","name":"816271266.177938","url":"data/shorts/816271266.177938.mp4"},{"type":"video","path":"data/video/816271267.177775.mp4","name":"816271267.177775","url":"data/video/816271267.177775.mp4","poster":"dist/posters/4.jpg"},{"type":"video","path":"data/video/816271269.325362.mp4","name":"816271269.325362","url":"data/video/816271269.325362.mp4","poster":"dist/posters/5.jpg"},{"type":"video","path":"data/video/816271271.599956.mp4","name":"816271271.599956","url":"data/video/816271271.599956.mp4","poster":"dist/posters/6.jpg"},{"type":"video","path":"data/video/816271272.993238.mp4","name":"816271272.993238","url":"data/video/816271272.993238.mp4","poster":"dist/posters/7.jpg"},{"type":"video","path":"data/video/816271273.818642.mp4","name":"816271273.818642","url":"data/video/816271273.818642.mp4","poster":"dist/posters/8.jpg"},{"type":"video","path":"data/video/816271275.461935.mp4","name":"816271275.461935","url":"data/video/816271275.461935.mp4","poster":"dist/posters/9.jpg"},{"type":"image","path":"data/image/S__156557318_0.jpg","name":"S__156557318_0","url":"data/image/S__156557318_0.jpg"},{"type":"image","path":"data/image/S__156557319_0.jpg","name":"S__156557319_0","url":"data/image/S__156557319_0.jpg"},{"type":"image","path":"data/image/S__156557320_0.jpg","name":"S__156557320_0","url":"data/image/S__156557320_0.jpg"},{"type":"image","path":"data/image/S__156557321_0.jpg","name":"S__156557321_0","url":"data/image/S__156557321_0.jpg"},{"type":"image","path":"data/image/S__156557322_0.jpg","name":"S__156557322_0","url":"data/image/S__156557322_0.jpg"},{"type":"image","path":"data/image/S__156557323_0.jpg","name":"S__156557323_0","url":"data/image/S__156557323_0.jpg"},{"type":"image","path":"data/image/S__156557324_0.jpg","name":"S__156557324_0","url":"data/image/S__156557324_0.jpg"},{"type":"image","path":"data/image/S__156557325_0.jpg","name":"S__156557325_0","url":"data/image/S__156557325_0.jpg"},{"type":"image","path":"data/image/S__156557326_0.jpg","name":"S__156557326_0","url":"data/image/S__156557326_0.jpg"},{"type":"image","path":"data/image/S__156557328_0.jpg","name":"S__156557328_0","url":"data/image/S__156557328_0.jpg"},{"type":"image","path":"data/image/S__156557329_0.jpg","name":"S__156557329_0","url":"data/image/S__156557329_0.jpg"},{"type":"image","path":"data/image/S__156557330_0.jpg","name":"S__156557330_0","url":"data/image/S__156557330_0.jpg"},{"type":"image","path":"data/image/S__156557331_0.jpg","name":"S__156557331_0","url":"data/image/S__156557331_0.jpg"},{"type":"image","path":"data/image/S__156557332_0.jpg","name":"S__156557332_0","url":"data/image/S__156557332_0.jpg"},{"type":"image","path":"data/image/S__156557333_0.jpg","name":"S__156557333_0","url":"data/image/S__156557333_0.jpg"},{"type":"image","path":"data/image/S__156557334_0.jpg","name":"S__156557334_0","url":"data/image/S__156557334_0.jpg"},{"type":"image","path":"data/image/S__156557335_0.jpg","name":"S__156557335_0","url":"data/image/S__156557335_0.jpg"},{"type":"image","path":"data/image/S__156557336_0.jpg","name":"S__156557336_0","url":"data/image/S__156557336_0.jpg"},{"type":"image","path":"data/image/S__156557337_0.jpg","name":"S__156557337_0","url":"data/image/S__156557337_0.jpg"},{"type":"image","path":"data/image/S__156557339_0.jpg","name":"S__156557339_0","url":"data/image/S__156557339_0.jpg"},{"type":"image","path":"data/image/S__156557340_0.jpg","name":"S__156557340_0","url":"data/image/S__156557340_0.jpg"},{"type":"image","path":"data/image/S__156557341_0.jpg","name":"S__156557341_0","url":"data/image/S__156557341_0.jpg"},{"type":"image","path":"data/image/S__156557342_0.jpg","name":"S__156557342_0","url":"data/image/S__156557342_0.jpg"},{"type":"image","path":"data/image/S__156557343_0.jpg","name":"S__156557343_0","url":"data/image/S__156557343_0.jpg"},{"type":"image","path":"data/image/S__156557344_0.jpg","name":"S__156557344_0","url":"data/image/S__156557344_0.jpg"},{"type":"image","path":"data/image/S__156557345_0.jpg","name":"S__156557345_0","url":"data/image/S__156557345_0.jpg"},{"type":"image","path":"data/image/S__156557346_0.jpg","name":"S__156557346_0","url":"data/image/S__156557346_0.jpg"},{"type":"image","path":"data/image/S__156557347_0.jpg","name":"S__156557347_0","url":"data/image/S__156557347_0.jpg"},{"type":"image","path":"data/image/S__156557348_0.jpg","name":"S__156557348_0","url":"data/image/S__156557348_0.jpg"},{"type":"image","path":"data/image/S__156557349.jpg","name":"S__156557349","url":"data/image/S__156557349.jpg"}]</script>
+</body>
+</html>
