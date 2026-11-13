@@ -21,8 +21,15 @@ function photo(item, thumbnail = false) {
   const img = document.createElement('img');
   img.alt = thumbnail ? '' : item.name;
   if (thumbnail) img.loading = 'lazy';
-  img.addEventListener('error', () => img.replaceWith(errorMessage('照片無法載入')), { once: true });
-  img.src = item.url;
+  const thumbnailUrl = thumbnail && item.thumbnail;
+  img.addEventListener('error', () => {
+    if (thumbnailUrl && img.getAttribute('src') === thumbnailUrl) {
+      img.src = item.url;
+    } else {
+      img.replaceWith(errorMessage('照片無法載入'));
+    }
+  });
+  img.src = thumbnailUrl || item.url;
   return img;
 }
 

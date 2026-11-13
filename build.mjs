@@ -46,6 +46,30 @@ export async function build(root, { thumbnails = false, optimizeVideos = false }
   await Promise.all([avatar, ...entries.map(item => item.path)].map(path =>
     copyFile(join(root, path), join(output, path))));
   const ffmpeg = process.env.MINI_FFMPEG || 'ffmpeg';
+  let avatarThumbnail;
+  if (thumbnails) {
+    const photos = entries.filter(item => item.type === 'image');
+    await mkdir(join(output, 'thumbnails'), { recursive: true });
+    for (const [index, item] of [{ path: avatar }, ...photos].entries()) {
+      const thumbnail = `thumbnails/${index}.webp`;
+      try {
+        await run(ffmpeg, ['-nostdin', '-v', 'error', '-i', join(root, item.path),
+          '-frames:v', '1', '-vf', index === 0
+            ? "scale=w='min(320,iw)':h='min(320,ih)':force_original_aspect_ratio=decrease"
+            : "scale=w='min(640,iw)':h='min(640,ih)':force_original_aspect_ratio=decrease",
+          '-c:v', 'libwebp', '-quality', '78', join(output, thumbnail)], { windowsHide: true });
+        if (!(await stat(join(output, thumbnail), { throwIfNoEntry: false }))?.size) continue;
+        if (index === 0) avatarThumbnail = thumbnail;
+        else item.thumbnail = thumbnail;
+      } catch (error) {
+        if (error.code === 'ENOENT' && error.syscall?.startsWith('spawn')) {
+          console.warn('找不到 FFmpeg，照片縮圖使用原始照片。');
+          break;
+        }
+        console.warn(`無法產生照片縮圖：${item.path}`);
+      }
+    }
+  }
   const optimized = new Set();
   if (optimizeVideos) {
     const mp4s = entries.filter(item => item.type !== 'image' && extname(item.path).toLowerCase() === '.mp4');
@@ -95,20 +119,22 @@ export async function build(root, { thumbnails = false, optimizeVideos = false }
   await Promise.all(['styles.css', 'gallery.js'].map(file =>
     copyFile(join(project, 'src', file), join(output, file))));
   const template = await readFile(join(project, 'src', 'index.html'), 'utf8');
-  const render = (items, assetPrefix = '') => {
+  const render = (items, assetPrefix = '', mediaPrefix = '') => {
     const json = JSON.stringify(items).replaceAll('<', '\\u003c');
     return template
       .replace('href="styles.css"', `href="${assetPrefix}styles.css"`)
       .replace('src="gallery.js"', `src="${assetPrefix}gallery.js"`)
+      .replace(`src="${avatar}"`, `src="${avatarThumbnail ? mediaPrefix + avatarThumbnail : avatar}"`)
       .replace('<!-- media -->', () => json);
   };
   await writeFile(join(output, 'index.html'), render(entries));
   const rootEntries = entries.map(item => ({
     ...item,
     url: optimized.has(item.path) ? `dist/${item.url}` : item.url,
+    ...(item.thumbnail && { thumbnail: `dist/${item.thumbnail}` }),
     ...(item.poster && { poster: `dist/${item.poster}` }),
   }));
-  await writeFile(join(root, 'index.html'), render(rootEntries, 'src/'));
+  await writeFile(join(root, 'index.html'), render(rootEntries, 'src/', 'dist/'));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
