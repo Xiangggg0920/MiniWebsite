@@ -9,7 +9,7 @@ Mini 是一隻出生於 2024 年 7 月 24 日的女生柯基。這個網站用 I
 ## 在本機執行
 
 1. 準備 Node.js 22 或更新版本。專案使用原生 HTML、CSS 和 JavaScript，可直接執行建置。
-2. 若要產生影片縮圖，將 FFmpeg 加入 PATH，或在專案根目錄建立 `.env.local` 並填入執行檔的完整路徑。例如 `MINI_FFMPEG="C:/tools/ffmpeg/bin/ffmpeg.exe"`。缺少 FFmpeg 時，圖庫影片會以播放圖示顯示。
+2. 建置使用 FFmpeg 產生影片縮圖和適合網頁播放的 MP4。將 FFmpeg 加入 PATH，或在專案根目錄建立 `.env.local` 並填入執行檔的完整路徑。例如 `MINI_FFMPEG="C:/tools/ffmpeg/bin/ffmpeg.exe"`。缺少 FFmpeg 時，圖庫影片會以播放圖示顯示並使用原始影片。
 3. 在專案根目錄開啟終端機並執行：
 
    ```sh
@@ -33,4 +33,4 @@ Mini 是一隻出生於 2024 年 7 月 24 日的女生柯基。這個網站用 I
 
 執行 `npm test` 可驗證素材新增、刪除、同名替換及檔名處理。測試在暫存目錄執行。
 
-`dist/` 是建置產生的完整靜態網站，包含首頁、素材副本和影片縮圖。日常更新請編輯 `data/`。若使用 GitHub Pages，可設定 GitHub Actions 在推送後執行建置並發布 `dist/`，部署環境需提供 FFmpeg 才能產生縮圖。專案規則與維護細節請見 [AGENTS.md](AGENTS.md)。
+`dist/` 是建置產生的完整靜態網站，包含首頁、部署用媒體和影片縮圖。日常更新請編輯 `data/`。若使用 GitHub Pages，可設定 GitHub Actions 在推送後執行建置並發布 `dist/`，部署環境需提供 FFmpeg 才能產生縮圖與轉檔。專案規則與維護細節請見 [AGENTS.md](AGENTS.md)。

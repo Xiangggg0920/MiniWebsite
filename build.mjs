@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
@@ -15,7 +15,7 @@ const collator = new Intl.Collator('en', { numeric: true });
 const compare = (a, b) => collator.compare(a, b) || (a < b ? -1 : Number(a > b));
 const run = promisify(execFile);
 
-export async function build(root, { thumbnails = false } = {}) {
+export async function build(root, { thumbnails = false, optimizeVideos = false } = {}) {
   const output = join(root, 'dist');
   if (!(await stat(join(root, avatar), { throwIfNoEntry: false }))?.isFile()) {
     throw new Error(`找不到頭貼：${avatar}`);
@@ -45,9 +45,36 @@ export async function build(root, { thumbnails = false } = {}) {
   await Promise.all(Object.keys(formats).map(type => mkdir(join(output, 'data', type), { recursive: true })));
   await Promise.all([avatar, ...entries.map(item => item.path)].map(path =>
     copyFile(join(root, path), join(output, path))));
+  const ffmpeg = process.env.MINI_FFMPEG || 'ffmpeg';
+  const optimized = new Set();
+  if (optimizeVideos) {
+    const mp4s = entries.filter(item => item.type !== 'image' && extname(item.path).toLowerCase() === '.mp4');
+    for (const item of mp4s) {
+      const destination = join(output, item.path);
+      const temporary = `${destination}.optimized.mp4`;
+      try {
+        await run(ffmpeg, ['-nostdin', '-v', 'error', '-i', join(root, item.path),
+          '-map', '0:V:0', '-map', '0:a:0?', '-vf',
+          "scale=w='min(960,iw)':h='min(960,ih)':force_original_aspect_ratio=decrease:force_divisible_by=2",
+          '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '26', '-maxrate', '1500k', '-bufsize', '3000k',
+          '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '96k', '-movflags', '+faststart', temporary],
+        { windowsHide: true });
+        await rename(temporary, destination);
+        optimized.add(item.path);
+      } catch (error) {
+        if (error.code === 'ENOENT' && error.syscall?.startsWith('spawn')) {
+          console.warn('找不到 FFmpeg，部署使用原始影片。請將 FFmpeg 加入 PATH 或設定 MINI_FFMPEG。');
+          break;
+        }
+        console.warn(`無法最佳化影片，部署使用原始檔：${item.path}`);
+      } finally {
+        await rm(temporary, { force: true });
+      }
+    }
+  }
+
   const videos = entries.filter(item => item.type === 'video');
   if (thumbnails && videos.length) {
-    const ffmpeg = process.env.MINI_FFMPEG || 'ffmpeg';
     await mkdir(join(output, 'posters'), { recursive: true });
     for (const [index, item] of videos.entries()) {
       const poster = `posters/${index + 1}.jpg`;
@@ -76,14 +103,17 @@ export async function build(root, { thumbnails = false } = {}) {
       .replace('<!-- media -->', () => json);
   };
   await writeFile(join(output, 'index.html'), render(entries));
-  const rootEntries = entries.map(item =>
-    item.poster ? { ...item, poster: `dist/${item.poster}` } : item);
+  const rootEntries = entries.map(item => ({
+    ...item,
+    url: optimized.has(item.path) ? `dist/${item.url}` : item.url,
+    ...(item.poster && { poster: `dist/${item.poster}` }),
+  }));
   await writeFile(join(root, 'index.html'), render(rootEntries, 'src/'));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const localConfig = join(project, '.env.local');
   if (await stat(localConfig, { throwIfNoEntry: false })) process.loadEnvFile(localConfig);
-  await build(project, { thumbnails: true });
+  await build(project, { thumbnails: true, optimizeVideos: true });
   console.log('已產生根目錄 index.html 與部署用 dist/index.html');
 }
